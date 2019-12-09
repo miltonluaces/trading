@@ -1,0 +1,68 @@
+# Definitions
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+from os import path
+import sys
+sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
+
+from Trading.Funds.DBMgr import DBMgr
+from Trading.Funds.FundProcess import *
+from Trading.Funds.VisualFunds import VisualFunds
+
+db = DBMgr()
+vf = VisualFunds()
+
+# Monitor groups
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+sell = ['ES0173394034', 'LU0048365026', 'LU0607516092']
+news = ['LU1731833304', 'LU0267388220']  
+dfns = ['LU0219434361','']
+minvol = ['LU15643111410','IE00B6R33267','LU0450104905']
+grow = []
+perf = ['LU1715324858']
+hiyi = ['LU0370790650']
+
+
+# Methods
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+def Initialize(upd):
+    if upd: 
+        UpdateFundValues()
+        UpdateStockValues()
+        UpdateInvProportion()
+        UpdateFundVolatility()
+        InsertPerformance(1)
+        InsertPerformance(2)
+        InsertPerformanceTotal()
+  
+    vf = VisualFunds()
+    print('Initialized')
+
+
+def ShowInvCharts():
+    isins = db.GetInvestIsins(1)
+    vf.ShowCharts(isins)
+
+def ShowInvFTCharts():
+    isinCurrs = db.GetInvestIsinCurrs(1)
+    vf.ShowFTCharts(isinCurrs)
+
+    
+# Monitoring
+# ------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+if __name__ == '__main__':
+
+    #Initialize(upd=True)
+
+    #vf.ShowDB()
+    #vf.ShowCharts(sell)
+    #vf.ShowCharts(news)
+
+    #vf.ShowSP500()
+    #vf.ShowChart('LU0049842262')
+
+
+    ShowInvFTCharts()
