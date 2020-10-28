@@ -9,7 +9,7 @@ import time
 import seaborn as sb; sb.set()
 import yahoo_fin.stock_info as yfs
 import yahoo_finance as yf
-import Trading.Funds
+import trading.Funds
 from alpha_vantage.timeseries import TimeSeries
 from trading.Funds.FundReader import FundReader
 from trading.Funds.DBMgr import DBMgr
