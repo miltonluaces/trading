@@ -14,7 +14,7 @@ import quandl
 import requests 
 import yahoo_fin.stock_info as si
 from datetime import date, timedelta
-
+from yahoo_fin import options
 
 class FundReader:
 
@@ -143,9 +143,14 @@ class FundReader:
             value = si.get_live_price(code)
             return value
         except(Exception) as error:
-            print('Error')
+            print(Exception)
     
-
+    def GetOptionValue(self, ticker, date, strike, type='calls'):
+        try:
+            chain = options.get_options_chain(ticker, date)[type]
+            return (float)(chain[chain['Strike']==strike]['Last Price'])
+        except(Exception) as error:
+            print(Exception)
 
     def GetFloat(self, str):
         return eval(str.replace(',','.'))
@@ -155,9 +160,9 @@ if __name__ == '__main__':
     fr = FundReader()
     #url = fr.GetUrl('LU1684797787')
     #print(url)
-    data = fr.GetData('LU0329931090')
-    print('Value : ', data['value'])
-    print('Change : ', data['change'])
+    #data = fr.GetData('LU0329931090')
+    #print('Value : ', data['value'])
+    #print('Change : ', data['change'])
     #data = fr.GetFundData('F00000YCN2')
     #print('Name : ', data['name'])
     #print('Value : ', data['value'])
@@ -184,3 +189,10 @@ if __name__ == '__main__':
     #    isin = fr.GetFundIsin('https://www.openbank.es/fondo-inversion/' + name + '-')
     #    dbMgr.UpdateOpenIsin(isin, name)
     #    print(isin)
+
+
+
+    
+
+    po = fr.GetOptionValue('CSCO', "2021-01-15", 47)
+    print(po)

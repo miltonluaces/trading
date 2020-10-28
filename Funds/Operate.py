@@ -17,43 +17,43 @@ if __name__ == '__main__':
     # Funds
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    isin = 'IE00B29M2H10'
+    isin = 'LU0996182563'
 
-    fund ={ 'isin': isin, 
-            'name': 'Robeco Global Fintech', 
+    fund ={ 'isin': 'LU0996182563', 
+            'name': 'Amundi Index MSCI World AE-C', 
             'asset' : 'F',
             'currency': 'EUR', 
-            'market': 'GL', 
+            'market': 'WO', 
             'type': 'RV', 
-            'sector': 'Tech',
+            'sector': 'All',
             'size': 'Big', 
             'volatility':  0, 
             'risk': 2, 
-            'ogc': 0.94, 
-            'manager': 'BNY Mellon',
-            'broker': 'Openbank' } 
+            'ogc': 0.3, 
+            'manager': 'Amundi',
+            'broker': 'CC' } 
     
     #dbMgr.AddFund(fund)
 
-    #url = fr.GetUrl(isin)
+    url = fr.GetUrl(isin)
     #dbMgr.UpdateUrl(isin,  url)
 
 
     # Invest
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
+    isin = 'LU0996182563'
 
     inv = {'isin': isin,
-          'shares': 1027.6,  
-          'purchValue' : 2.606,
+          'shares': 17.3,  
+          'purchValue' : 173.39,
           'portfolioId': 1}
 
-    #dbMgr.AddInvest(inv)
+    dbMgr.AddInvest(inv)
 
     # Update investment
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-    dbMgr.UpdateInv('LU0505655562', 492.72, 4.965)
+    #dbMgr.UpdateInv('LU0171310443', 155.14, 32.23)
   
     # Delete investment
     # ------------------------------------------------------------------------------------------------------------------------------------------------------------------

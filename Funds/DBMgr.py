@@ -94,6 +94,18 @@ class DBMgr:
            except (Exception, psycopg2.DatabaseError) as error: 
                 print(error)
 
+    def UpdateOptionValue(self, ticker, date, strike, value):
+           query = 'UPDATE option SET currvalue = %s WHERE ticker = %s and exercise=%s and strike=%s'
+           try:
+                self.connect()
+                cursor = self.conn.cursor()
+                cursor.execute(query, (value, ticker, date, strike))
+                self.conn.commit()
+                cursor.close()
+                self.close()
+           except (Exception, psycopg2.DatabaseError) as error: 
+                print(error)
+
     def UpdateInv(self, isin, shares, purchValue):
             queryInv = "UPDATE invest SET shares = %s, purchvalue = %s, modified = NOW() WHERE isin = %s;"
             try:
@@ -246,6 +258,18 @@ class DBMgr:
            for i in range(res.shape[0]):
                dict[res.values[i][0]] = res.values[i][1]
            return dict
+
+    def GetOptions(self):
+           query = "SELECT ticker, exercise, strike, currency FROM option"
+           res = self.QueryStr(query)
+           options = []
+           for i in range(res.shape[0]):
+                options.append({'ticker':res.values[i][0], 'exercise':res.values[i][1], 'strike':res.values[i][2], 'currency':res.values[i][3]})
+           return options
+    
+
+    def GetOptionCurrencies(self):
+            return None
 
     def AddFundData(self, fd):
            query = 'INSERT INTO funddata(isin, name, acufun1m, acufun3m, acufun6m, acufun1y, acufun3y, acufun5y, acufunIni,acuidx1m, acuidx3m, acuidx6m, acuidx1y, acuidx3y, acuidx5y, acuidxIni, acucat1m, acucat3m, acucat6m, acucat1y, acucat3y, acucat5y, acucatIni, anufun0, anufun1, anufun2, anufun3, anufun4, anufun5, anuidx0, anuidx1, anuidx2, anuidx3, anuidx4, anuidx5, anucat0, anucat1, anucat2, anucat3, anucat4, anucat5, stafunvol, stafunrat, staidxvol, staidxrat, staratbet, staratinf, created, modified) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s);'

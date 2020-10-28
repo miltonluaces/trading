@@ -27,19 +27,22 @@ hiyi = ['LU0370790650']
 # Methods
 # ------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
-def Initialize(upd):
-    if upd: 
-        UpdateFundValues()
-        UpdateStockValues()
+def UpdateProportionVolatility():
         UpdateInvProportion()
         UpdateFundVolatility()
-        InsertPerformance(1)
-        InsertPerformance(2)
-        InsertPerformanceTotal()
-  
+
+def Initialize():  
     vf = VisualFunds()
     print('Initialized')
 
+def UpdateAssetsPerformance():
+    UpdateFundValues()
+    UpdateStockValues()
+    UpdateOptionValues()
+    InsertPerformance(1)
+    InsertPerformance(2)
+    InsertPerformanceOptions()
+    InsertPerformanceTotal()
 
 def ShowInvCharts():
     isins = db.GetInvestIsins(1)

@@ -2,11 +2,11 @@ from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
 
+from Trading.Funds.DBMgr import DBMgr
 from forex_python.converter import CurrencyRates
 import psycopg2
 import datetime
 import requests
-from Trading.Funds.DBMgr import DBMgr
 from Trading.Funds.FundReader import FundReader
 from Trading.Funds.CurrencyExchange import CurrencyExchange
 from Trading.Stocks import BasicQuant as bq
@@ -63,6 +63,27 @@ def UpdateStockValues():
         except(Exception) as error:
             print('No data for ', codes[i])
 
+def UpdateOptionValues():
+    fr = FundReader()
+    ce = CurrencyExchange()
+    ce.LoadRates('EUR')
+    dbMgr = DBMgr()
+
+    print('\nUpdating Option Values...\n')
+    options = dbMgr.GetOptions()
+    for i in range(len(options)):
+        try:
+            value = fr.GetOptionValue(options[i]['ticker'], str(options[i]['exercise']), options[i]['strike'])
+            currency = options[i]['currency']
+            change = 0
+            if currency == 'EUR': eurValue = round(value,2)
+            else : eurValue = round(value * (1/ce.GetRate(currency)),2)
+            eurTotValue = eurValue*100
+            dbMgr.UpdateOptionValue(options[i]['ticker'], options[i]['exercise'], options[i]['strike'], eurTotValue)
+            print(options[i]['ticker'], value, eurTotValue)
+        except(Exception) as error:
+            print('No data for ', options[i]['ticker'])
+
 def UpdateInvProportion():
      print('\nUpdating Proportions...\n')
      dbMgr = DBMgr()
@@ -104,6 +125,22 @@ def InsertPerformance(portId):
          dbMgr.connect()
          cursor = dbMgr.conn.cursor()
          cursor.execute(query, (portId, portId))
+         dbMgr.conn.commit()
+         cursor.close()
+         dbMgr.close()
+    except (Exception, psycopg2.DatabaseError) as error: 
+         print(error)
+
+def InsertPerformanceOptions():
+    print('\nUpdating Performance Portfolio Options... \n')
+    dbMgr = DBMgr()
+    query = "INSERT INTO performance(date, purchase, current, diff, reldiff, volatility, ogc, change, portfolioId) \
+SELECT NOW() AS date, sum(purchvalue) AS purchase, sum(currvalue) AS current, sum(currvalue)-sum(purchvalue) AS diff, (round(((sum(currvalue)-sum(purchvalue))/(sum(purchvalue)))*10000))/100 AS relDiff, 0 as volatility, 0 as ogc, 0 as change, 3 as portfolioId FROM option;"
+
+    try:
+         dbMgr.connect()
+         cursor = dbMgr.conn.cursor()
+         cursor.execute(query)
          dbMgr.conn.commit()
          cursor.close()
          dbMgr.close()
@@ -178,6 +215,7 @@ if __name__ == '__main__':
     #LoadUrls()
     #UpdateFundValues()
     #UpdateStockValues()
+    #UpdateOptionValues()
     #UpdateFundVolatility()
     #InsertPerformance(1)
     #InsertPerformance(2)
@@ -185,4 +223,5 @@ if __name__ == '__main__':
     #cc = CurrencyRates()
     #Currency = cc.get_rates('EUR')
     #print(Currency['USD'])
+    InsertPerformanceOptions()
     print('end')
