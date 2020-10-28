@@ -8,7 +8,7 @@ import datetime
 import numpy as np
 import pandas as pd
 import pandas.io.sql as psql
-from Trading.Funds.FundReader import FundReader
+from trading.Funds.FundReader import FundReader
 
 
 class DBMgr:

@@ -2,9 +2,9 @@ from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
 
-from Trading.Funds.DBMgr import DBMgr 
-from Trading.Funds.FundReader import FundReader 
-from Trading.Funds.PortfolioReader import FundReader 
+from trading.Funds.DBMgr import DBMgr 
+from trading.Funds.FundReader import FundReader 
+from trading.Funds.PortfolioReader import FundReader 
 
 def AddFunds():
     funds = []

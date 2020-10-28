@@ -1,6 +1,6 @@
 import numpy as np
 import pandas as pd
-from Trading.Funds.FundReader import FundReader
+from trading.Funds.FundReader import FundReader
 
 if __name__ == '__main__':
 

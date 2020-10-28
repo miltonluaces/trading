@@ -5,9 +5,9 @@ from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
 
-from Trading.Funds.DBMgr import DBMgr
-from Trading.Funds.FundProcess import *
-from Trading.Funds.VisualFunds import VisualFunds
+from trading.Funds.DBMgr import DBMgr
+from trading.Funds.FundProcess import *
+from trading.Funds.VisualFunds import VisualFunds
 
 db = DBMgr()
 vf = VisualFunds()

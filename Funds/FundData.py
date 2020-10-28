@@ -7,7 +7,7 @@ import PyPDF2
 from six.moves.urllib.request import urlopen
 import io
 from tika import parser
-from Trading.Funds.DBMgr import DBMgr
+from trading.Funds.DBMgr import DBMgr
 import psycopg2
 import requests
 

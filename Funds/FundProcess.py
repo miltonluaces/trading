@@ -2,14 +2,14 @@ from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
 
-from Trading.Funds.DBMgr import DBMgr
+from trading.Funds.DBMgr import DBMgr
 from forex_python.converter import CurrencyRates
 import psycopg2
 import datetime
 import requests
-from Trading.Funds.FundReader import FundReader
-from Trading.Funds.CurrencyExchange import CurrencyExchange
-from Trading.Stocks import BasicQuant as bq
+from trading.Funds.FundReader import FundReader
+from trading.Funds.CurrencyExchange import CurrencyExchange
+from trading.Stocks import BasicQuant as bq
 
 def LoadUrls():
     dbMgr = DBMgr()

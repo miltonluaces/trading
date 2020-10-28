@@ -2,7 +2,7 @@ from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
 
-from Trading.Funds.FundReader import FundReader
+from trading.Funds.FundReader import FundReader
 
 
 class PortfolioReader:
