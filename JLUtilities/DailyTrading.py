@@ -11,10 +11,10 @@ import yahoo_fin.stock_info as yfs
 import yahoo_finance as yf
 import Trading.Funds
 from alpha_vantage.timeseries import TimeSeries
-from Trading.Funds.FundReader import FundReader
-from Trading.Funds.DBMgr import DBMgr
-from Trading.Funds.Monitor import *
-from Trading.Funds.VisualFunds import VisualFunds
+from trading.Funds.FundReader import FundReader
+from trading.Funds.DBMgr import DBMgr
+from trading.Funds.Monitor import *
+from trading.Funds.VisualFunds import VisualFunds
 
 
 

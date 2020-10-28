@@ -10,7 +10,7 @@ import seaborn as sb; sb.set()
 import yahoo_fin.stock_info as yfs
 import yahoo_finance as yf
 import yfinance as yfin
-import Trading.Funds
+import trading.Funds
 
 # Real time data
 #___________________________________________________________________________________________________________________________________________________________________
