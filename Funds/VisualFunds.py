@@ -9,7 +9,7 @@ from beautifultable import BeautifulTable
 import matplotlib.pyplot as plt
 import tableprint as tp
 import seaborn as sb; sb.set()
-from Visual.Misc.Tables import ShowDataFrame
+from problem_solving.Visual.Misc.Tables import ShowDataFrame
 from trading.Funds.DBMgr import DBMgr
 from datetime import datetime
 
