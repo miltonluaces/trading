@@ -1,6 +1,7 @@
 from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
+sys.path.append(path.abspath('D:/source/repos'))
 
 import psycopg2
 import sys, os
@@ -61,6 +62,23 @@ class DBMgr:
             cursor = self.conn.cursor()
             cursor.execute(queryIns, (isinBuy, isinSell, amount, type, comission, portfolioId, status, self.now, self.now))
             cursor.execute(queryUpd, (isinBuy, isinSell))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+
+
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+    def AddPLOperation(self, isin, shares, purchValue, currValue, currency, asset):
+        query = 'INSERT INTO operation(date, type, isin, shares, purchValue, currValue, currency, plcurr, pleur, asset) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+        plcurr = round(shares * (currValue - purchValue), 2)
+        pleur =  round(plcurr * currency, 2)
+        
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query, (self.now, 'S', isin, shares, purchValue, currValue, currency, plcurr, pleur, asset))
             self.conn.commit()
             cursor.close()
             self.close()
@@ -243,6 +261,12 @@ class DBMgr:
            for i in range(res.shape[0]):
                 dict[res.values[i][0]] = res.values[i][1]
            return dict
+
+    def GetFundCurrencyAsset(self, isin):
+           query = "SELECT currency, asset FROM fund WHERE isin='" + isin + "'"
+           res = self.QueryStr(query)
+           if res.shape[0]==0: return { 'currency': 'USD', 'asset': 'O'}   # TODO: review
+           return { 'currency': res.values[0][0], 'asset': res.values[0][1]}
 
     def GetStockCodes(self):
            query = "SELECT isin FROM fund WHERE asset='S'"

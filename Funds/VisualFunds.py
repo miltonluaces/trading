@@ -21,6 +21,7 @@ class VisualFunds:
         self.dbUrl = 'http://127.0.0.1:49830/browser/'
         dbMgr = DBMgr()
         self.fd = dbMgr.GetFundDict()
+        #self.ftUrl = 'https://markets.ft.com/data/funds/tearsheet/charts?s='
         self.ftUrl = 'https://markets.ft.com/data/funds/tearsheet/charts?s='
         self.histPath = 'D:/data/csv/funds/Portfolio/'
     
