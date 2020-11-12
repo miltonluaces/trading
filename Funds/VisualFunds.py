@@ -14,6 +14,8 @@ from trading.Funds.DBMgr import DBMgr
 from datetime import datetime
 from trading.Funds.FundReader import FundReader
 
+fr = FundReader()
+
 class VisualFunds:
     
     def __init__(self):
@@ -32,6 +34,17 @@ class VisualFunds:
         #os.system(pgAdmin);
         os.system('D:\\ProgramFiles\\Postgre\\"pgAdmin 4"\\bin\\pgAdmin4.exe')
 
+    def ShowQueryRes(self, queryStr):
+        dbMgr = DBMgr()
+        res = dbMgr.QueryStr(queryStr)
+        df = None
+        for ro in res.values:
+            rowDf = pd.DataFrame(row)
+            if df is None:  df = pd.DataFrame(rowDf.T)
+            else: df = df.append(rowDf.T)
+        df.columns=res.columns.values
+        print(df)
+
     def ShowSP500(self):
         url = 'https://www.marketwatch.com/investing/index/spx/charts'
         wb.open(url)  
@@ -45,17 +58,14 @@ class VisualFunds:
         for isin in isins:
             self.ShowChart(isin)
             
-    def ShowQueryRes(self, queryStr):
-        dbMgr = DBMgr()
-        res = dbMgr.QueryStr(queryStr)
-        df = None
-        for ro in res.values:
-            rowDf = pd.DataFrame(row)
-            if df is None:  df = pd.DataFrame(rowDf.T)
-            else: df = df.append(rowDf.T)
-        df.columns=res.columns.values
-        print(df)
+    def ShowMSChart(self, isin):
+        url = fr.GetUrl(isin)
+        url = self.chartUrl + url + self.tab
+        wb.open(url)
 
+    def ShowMSCharts(self, isins):
+        [self.ShowMSChart(isin) for isin in isins]
+    
     def ShowFTChart(self, isin, currency):
         url = self.ftUrl + isin + ':' + currency
         wb.open(url)
@@ -108,7 +118,7 @@ if __name__ == '__main__':
     vf = VisualFunds()
     #vf.ShowChart('LU1731833304')
     #vf.ShowChart('LU0260870158')
-    
+    #vf.ShowMSChart('LU0607512851')
     #isins = ['LU1731833304','LU0260870158']
     #vf.ShowCharts(isins)
 
@@ -131,7 +141,9 @@ if __name__ == '__main__':
 
     #vf.ShowFTCharts()
 
-    vf.ShowFundChart(['IE00B52VLZ70', 'EUR'])
+    
+
+    #vf.ShowFundChart(['IE00B52VLZ70', 'EUR'])
     #fr = FundReader()
     #monitor = fr.GetFundsDf('D:/Invest/Funds/Monitor.xlsx')
     #print(monitor)

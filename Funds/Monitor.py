@@ -3,7 +3,7 @@
 
 from os import path
 import sys
-sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
+sys.path.append(path.abspath('D:/source/repos'))
 
 from trading.Funds.DBMgr import DBMgr
 from trading.Funds.FundProcess import *
@@ -61,11 +61,15 @@ if __name__ == '__main__':
     #Initialize(upd=True)
 
     #vf.ShowDB()
-    #vf.ShowCharts(sell)
+
+    #vf.ShowChart('LU0607512851')
+
+    funds = ['LU0607512851','LU0155303323','LU0130729220','IE00B3DJ5M15','LU0255976994']
+    vf.ShowMSCharts(funds)
     #vf.ShowCharts(news)
 
     #vf.ShowSP500()
     #vf.ShowChart('LU0049842262')
 
 
-    ShowInvFTCharts()
+    #ShowInvFTCharts()
