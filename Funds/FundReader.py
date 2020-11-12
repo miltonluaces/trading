@@ -158,9 +158,9 @@ class FundReader:
 
     def GetFundsDf(self, file):
         monitor = pd.read_excel(file)
-        monitor.columns = ['none', 'fund_buy_isin', 'fund_buy_curr', 'fund_sell_isin', 'fund_sell_curr', 'none', 'stock_buy', 'stock_sell']
-        monitor = monitor[3:]
-        monitor = monitor.drop(['none'], axis=1)
+        monitor = monitor.iloc[3:, 1:8]
+        monitor = monitor.dropna(how='all')
+        monitor.columns = ['fund_buy_isin', 'fund_buy_curr', 'fund_sell_isin', 'fund_sell_curr', 'none', 'stock_buy', 'stock_sell']
         return monitor
 
 if __name__ == '__main__':

@@ -26,6 +26,7 @@ class VisualFunds:
         self.fd = dbMgr.GetFundDict()
         #self.ftUrl = 'https://markets.ft.com/data/funds/tearsheet/charts?s='
         self.ftUrl = 'https://markets.ft.com/data/funds/tearsheet/charts?s='
+        self.tvUrl = 'https://www.tradingview.com/chart/?symbol='
         self.histPath = 'D:/data/csv/funds/Portfolio/'
     
     def ShowDB(self):
@@ -82,7 +83,11 @@ class VisualFunds:
     def ShowFundCharts(self, funds):
         [self.ShowFundChart(fund) for fund in funds]
     
-    
+    def ShowTVStockChart(self, ticker, exchange):
+        url = self.tvUrl + exchange + '%3A' + ticker
+        wb.open(url) 
+
+
     def GetQueryRes(self, queryStr):
         dbMgr = DBMgr()
         res = dbMgr.QueryStr(queryStr)
@@ -151,3 +156,5 @@ if __name__ == '__main__':
     #buy = list(zip(monitor.buy_isin, monitor.buy_curr))
     #sell = list(zip(monitor.sell_isin, monitor.sell_curr))
     #vf.ShowFundCharts(buy)
+
+    vf.ShowTVStockChart('ACN', 'NYSE')

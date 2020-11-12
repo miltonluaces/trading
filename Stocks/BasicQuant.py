@@ -40,6 +40,10 @@ def PortfolioValue(prnt=True):
 
 if __name__ == '__main__':
 
-    PortfolioValue(True)
+    print('test')
+
+    #PortfolioValue(True)
     #GetHist()
+
+    
     

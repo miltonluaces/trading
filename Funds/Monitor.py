@@ -58,14 +58,15 @@ def ShowInvFTCharts():
 
 if __name__ == '__main__':
 
+    print('test')
     #Initialize(upd=True)
 
     #vf.ShowDB()
 
     #vf.ShowChart('LU0607512851')
 
-    funds = ['LU0607512851','LU0155303323','LU0130729220','IE00B3DJ5M15','LU0255976994']
-    vf.ShowMSCharts(funds)
+    #funds = ['LU0607512851','LU0155303323','LU0130729220','IE00B3DJ5M15','LU0255976994']
+    #vf.ShowMSCharts(funds)
     #vf.ShowCharts(news)
 
     #vf.ShowSP500()
