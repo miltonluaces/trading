@@ -131,10 +131,11 @@ if __name__ == '__main__':
 
     #vf.ShowFTCharts()
 
-    fr = FundReader()
-    monitor = fr.GetFundsDf('D:/Invest/Funds/Monitor.xlsx')
-    print(monitor)
+    vf.ShowFundChart(['IE00B52VLZ70', 'EUR'])
+    #fr = FundReader()
+    #monitor = fr.GetFundsDf('D:/Invest/Funds/Monitor.xlsx')
+    #print(monitor)
     
-    buy = list(zip(monitor.buy_isin, monitor.buy_curr))
-    sell = list(zip(monitor.sell_isin, monitor.sell_curr))
-    vf.ShowFundCharts(buy)
+    #buy = list(zip(monitor.buy_isin, monitor.buy_curr))
+    #sell = list(zip(monitor.sell_isin, monitor.sell_curr))
+    #vf.ShowFundCharts(buy)
