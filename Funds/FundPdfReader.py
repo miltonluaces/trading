@@ -7,7 +7,7 @@ import PyPDF2
 
 if __name__ == '__main__':
 
-    path = 
+    
     # creating an object 
     file = open('example.pdf', 'rb')
 

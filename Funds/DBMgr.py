@@ -221,6 +221,10 @@ class DBMgr:
                 invIsins.append(res.values[i][0])
            return invIsins
     
+    def GetFcodeCurr(self, isin):
+        res = self.QueryStr("SELECT url, currency FROM fund WHERE isin ='" + isin + "'")
+        return { 'fcode': res.values[0][0], 'currency': res.values[0][1]}
+    
     def GetInvestIsinCurrs(self, portfolio):
            res = self.QueryStr('SELECT i.isin, f.currency f FROM fund AS f INNER JOIN invest AS i ON f.isin = i.isin WHERE portfolioId =' + str(portfolio))
            invIsinCurrs = []
@@ -314,7 +318,7 @@ class DBMgr:
            print(res.values[0])
 
     def connect(self):
-        self.conn = psycopg2.connect(host="localhost", database=self.dbName, user=self.user, password=self.password, port = 5433)
+        self.conn = psycopg2.connect(host="localhost", database=self.dbName, user=self.user, password=self.password, port = 5432)
 
     def close(self):
         if self.conn is not None: 
@@ -427,8 +431,8 @@ if __name__ == '__main__':
 
     #dbMgr.UpdateInvOperation('IE00B03HCZ61', 61.33, 1499.94)
 
-    #isins = dbMgr.GetFundIsins(True)
-    #print(isins)
+    isins = dbMgr.GetFundIsins(True)
+    print(isins)
 
     #codes = dbMgr.GetStockCodes()
     #print(codes)
@@ -438,5 +442,7 @@ if __name__ == '__main__':
 
     #iic = dbMgr.GetInvestIsinNames(1)
     #print(iic)
+    
+    dbMgr.GetFcodeCurr(isin='IE00B530N462')
 
    

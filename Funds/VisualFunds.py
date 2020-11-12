@@ -1,6 +1,6 @@
 from os import path
 import sys
-sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
+sys.path.append('D:/source/repos')
 
 import webbrowser as wb
 import pandas as pd
@@ -12,6 +12,7 @@ import seaborn as sb; sb.set()
 from problem_solving.Visual.Misc.Tables import ShowDataFrame
 from trading.Funds.DBMgr import DBMgr
 from datetime import datetime
+from trading.Funds.FundReader import FundReader
 
 class VisualFunds:
     
@@ -63,6 +64,15 @@ class VisualFunds:
         for ic in isinCurrs:
             self.ShowFTChart(ic[0], ic[1])
 
+    # fund tuple (isin, currency)
+    def ShowFundChart(self, fund_tuple):
+        url = self.ftUrl + fund_tuple[0] + ':' + fund_tuple[1]
+        wb.open(url)
+    
+    def ShowFundCharts(self, funds):
+        [self.ShowFundChart(fund) for fund in funds]
+    
+    
     def GetQueryRes(self, queryStr):
         dbMgr = DBMgr()
         res = dbMgr.QueryStr(queryStr)
@@ -120,3 +130,11 @@ if __name__ == '__main__':
     #vf.ShowFTChart(isin, 'EUR')
 
     #vf.ShowFTCharts()
+
+    fr = FundReader()
+    monitor = fr.GetFundsDf('D:/Invest/Funds/Monitor.xlsx')
+    print(monitor)
+    
+    buy = list(zip(monitor.buy_isin, monitor.buy_curr))
+    sell = list(zip(monitor.sell_isin, monitor.sell_curr))
+    vf.ShowFundCharts(buy)

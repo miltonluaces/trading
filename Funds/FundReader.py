@@ -1,6 +1,7 @@
 from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
+import pandas as pd
 
 import sys
 import re
@@ -155,6 +156,13 @@ class FundReader:
     def GetFloat(self, str):
         return eval(str.replace(',','.'))
 
+    def GetFundsDf(self, file):
+        monitor = pd.read_excel(file)
+        monitor.columns = ['none', 'fund_buy_isin', 'fund_buy_curr', 'fund_sell_isin', 'fund_sell_curr', 'none', 'stock_buy', 'stock_sell']
+        monitor = monitor[2:]
+        monitor = monitor.drop(['none'], axis=1)
+        return monitor
+
 if __name__ == '__main__':
     
     fr = FundReader()
@@ -190,9 +198,10 @@ if __name__ == '__main__':
     #    dbMgr.UpdateOpenIsin(isin, name)
     #    print(isin)
 
-
+    monitor = fr.GetFundsDf('D:/Invest/Funds/Monitor.xlsx')
+    print(monitor)
 
     
 
-    po = fr.GetOptionValue('CSCO', "2021-01-15", 47)
-    print(po)
+    #po = fr.GetOptionValue('CSCO', "2021-01-15", 47)
+    #print(po)
