@@ -1,6 +1,7 @@
 from os import path
 import sys
 sys.path.append(path.abspath('D:/source/repos/ProblemSolving/'))
+import numpy as np
 import pandas as pd
 
 import sys
@@ -162,6 +163,15 @@ class FundReader:
         monitor = monitor.dropna(how='all')
         monitor.columns = ['fund_buy_isin', 'fund_buy_curr', 'fund_sell_isin', 'fund_sell_curr', 'none', 'stock_buy', 'stock_sell']
         return monitor
+
+    def get_monitor_lists(self, monitor):
+        monitor.replace(' ', np.nan, inplace=True)
+        monitor.replace('', np.nan, inplace=True)
+        fund_buy = list(zip(monitor.fund_buy_isin.dropna(), monitor.fund_buy_curr.dropna()))
+        fund_sell = list(zip(monitor.fund_sell_isin.dropna(), monitor.fund_sell_curr.dropna()))
+        stock_buy = list(monitor.stock_buy.dropna())
+        stock_sell = list(monitor.stock_sell.dropna())
+        return {'fund_buy': fund_buy, 'fund_sell': fund_sell, 'stock_buy': stock_buy, 'stock_sell': stock_sell}
 
 if __name__ == '__main__':
     
