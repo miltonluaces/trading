@@ -5,6 +5,7 @@ sys.path.append('D:/source/repos')
 import webbrowser as wb
 import pandas as pd
 import os
+import string
 from beautifultable import BeautifulTable
 import matplotlib.pyplot as plt
 import tableprint as tp
@@ -27,6 +28,7 @@ class VisualFunds:
         #self.ftUrl = 'https://markets.ft.com/data/funds/tearsheet/charts?s='
         self.ftUrl = 'https://markets.ft.com/data/funds/tearsheet/charts?s='
         self.tvUrl = 'https://www.tradingview.com/chart/?symbol='
+        self.tvIdxUrl = 'https://www.tradingview.com/chart/'
         self.histPath = 'D:/data/csv/funds/Portfolio/'
     
     def ShowDB(self):
@@ -86,8 +88,10 @@ class VisualFunds:
     def ShowTVStockChart(self, ticker, exchange):
         url = self.tvUrl + exchange + '%3A' + ticker
         wb.open(url) 
-
-
+    
+    def ShowTVIndex(self):
+        wb.open(self.tvIdxUrl + 'NMfC5gPA' + '/')
+        
     def GetQueryRes(self, queryStr):
         dbMgr = DBMgr()
         res = dbMgr.QueryStr(queryStr)
@@ -157,4 +161,6 @@ if __name__ == '__main__':
     #sell = list(zip(monitor.sell_isin, monitor.sell_curr))
     #vf.ShowFundCharts(buy)
 
-    vf.ShowTVStockChart('ACN', 'NYSE')
+    #vf.ShowTVStockChart('ACN', 'NYSE')
+    
+    vf.ShowTVIndex('SP500')

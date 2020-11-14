@@ -15,6 +15,7 @@ from trading.Funds.FundReader import FundReader
 from trading.Funds.DBMgr import DBMgr
 from trading.Funds.Monitor import *
 from trading.Funds.VisualFunds import VisualFunds
+import investpy
 
 
 
@@ -86,6 +87,8 @@ def GenHistory(tickers, ndays, filename):
     df.to_csv('D:/Invest/data/stock_hist/'+ filename + '_' + str(ndays) + '.csv')
     print(filename, ' generated.')
 
+
+
 # StockTsAnalysis
 #____________________________________________________________________________________________________________________________________________________________________
 
@@ -101,4 +104,8 @@ if __name__ == '__main__':
     #stocks = vf.GetQueryRes("SELECT isin FROM investView() WHERE asset = 'S'")
     #for i in range(stocks.shape[0]):
     #    Stock_chart(stocks.iloc[i]['isin'])
+
+    df = get_index_hist(index='sp500re', start='01/01/2020', end='01/11/2020', interval='Daily')
+    print(df.shape[0])
+    print(df.head())
 
