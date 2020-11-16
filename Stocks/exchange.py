@@ -24,11 +24,11 @@ class Exchange:
         #copy from download
 
     def gen_exchange(self):
-        nyse = pd.read_csv(path + 'nyse.csv')[['Symbol', 'Name']]
+        nyse = pd.read_csv(self.path_ + 'nyse.csv')[['Symbol', 'Name']]
         nyse['exchange'] = 'NYSE'
-        nasdaq = pd.read_csv(path + 'nasdaq.csv')[['Symbol', 'Name']]
+        nasdaq = pd.read_csv(self.path + 'nasdaq.csv')[['Symbol', 'Name']]
         nasdaq['exchange'] = 'NASDAQ'
-        amex = pd.read_csv(path + 'amex.csv')[['Symbol', 'Name']]
+        amex = pd.read_csv(self.path + 'amex.csv')[['Symbol', 'Name']]
         amex['exchange'] = 'AMEX'
 
         df = pd.concat([nyse, nasdaq, amex])
@@ -39,9 +39,22 @@ class Exchange:
         self.exchg = pd.read_csv(self.path + 'exchange.csv')
         self.exchg.index = self.exchg['Symbol']
 
-
+    
     def get_exchange(self, ticker):
-        return self.exchg[self.exchg['Symbol']==ticker]['exchange'][0]
+        try:
+            return self.exchg[self.exchg['Symbol']==ticker]['exchange'][0]
+        except:
+            print(ticker, 'not found.')
+
+    def get_sector(self, ticker):
+        try:
+            return self.sector[self.sector['Symbol']==ticker]['Sector'][0]
+        except:
+            print (ticker, 'exchange not found')
+            return ''
+
+
+
 
 
 
@@ -50,9 +63,12 @@ if __name__ == '__main__':
     ex = Exchange()
     #ex.gen_exchange()
     ex.load_exchange()
+
     print(ex.get_exchange('ACN'))
     print(ex.get_exchange('AAPL'))
 
+    print(ex.get_sector('ACN'))
+    print(ex.get_sector('AAPL'))
     #df = ex.exchg
     #print(df.head())
     #df['Symbol']

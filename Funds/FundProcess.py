@@ -114,8 +114,8 @@ def UpdateFundVolatility():
         dbMgr.UpdateFundVolatility(isins[i], data['volatility'])
         print(isins[i], data['volatility'])
 
-def InsertPerformance(portId):
-    print('\nUpdating Performance Portfolio ' ,portId , ' ...\n')
+def InsertPerformanceFunds():
+    print('\nUpdating Performance Portfolio Funds ...\n')
     dbMgr = DBMgr()
     query = "INSERT INTO performance(date, purchase, current, diff, reldiff, volatility, ogc, change, portfolioId) \
     (SELECT NOW() AS date, purchase, current, current-purchase AS diff, (round(((current-purchase)/purchase)*10000))/100 AS relDiff, volatility, ogc, change, %s FROM \
@@ -124,7 +124,7 @@ def InsertPerformance(portId):
     try:
          dbMgr.connect()
          cursor = dbMgr.conn.cursor()
-         cursor.execute(query, (portId, portId))
+         cursor.execute(query, (1, 1))
          dbMgr.conn.commit()
          cursor.close()
          dbMgr.close()

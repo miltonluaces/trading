@@ -35,7 +35,8 @@ class Indices:
         try:
             return self.sps[self.sps['Symbol']==ticker]['Sector'].values[0]
         except:
-            print(ticker, 'not found.')
+            print (ticker, 'sector not found')
+            return ''
 
 if __name__ == '__main__':
 

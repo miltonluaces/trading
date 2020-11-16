@@ -7,6 +7,7 @@ sys.path.append(path.abspath('D:/source/repos'))
 
 from trading.Funds.DBMgr import DBMgr
 from trading.Funds.FundProcess import *
+from trading.Stocks.StockProcess import *
 from trading.Funds.VisualFunds import VisualFunds
 
 db = DBMgr()
@@ -39,8 +40,8 @@ def UpdateAssetsPerformance():
     UpdateFundValues()
     UpdateStockValues()
     UpdateOptionValues()
-    InsertPerformance(1)
-    InsertPerformance(2)
+    InsertPerformanceFunds()
+    InsertPerformanceStocks()
     InsertPerformanceOptions()
     InsertPerformanceTotal()
 

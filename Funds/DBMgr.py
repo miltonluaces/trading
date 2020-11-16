@@ -40,6 +40,26 @@ class DBMgr:
         except (Exception, psycopg2.DatabaseError) as error: 
             print(error)
     
+    def AddStock(self, ticker, name, currency='USD', type='STO', market='', sector='', sp500='N', rs2000='N'):
+        query = 'INSERT INTO stock(ticker, name, currency, type, market, sector, sp500, rs2000, value, hist, updvalue, updhist, starthist, endhist, datevalue) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            value = 0
+            hist = ''
+            updvalue = 'N'
+            updhist = 'N'
+            starthist = '01/01/2000'
+            endhist = '01/01/2000'
+            datevalue = '01/01/2000'
+            cursor.execute(query, (ticker, name, currency, type, market, sector, sp500, rs2000, value, hist,  updvalue, updhist, starthist, endhist, datevalue))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+    query = "insert into stock(ticker, name, currency, market, sector, value, broker, trading, type, update, created) values ('DPW.DE', 'Deutch P W', 'EUR', 'INTER', '', 0, 'IB', 'POS', 'STO', 1, now())"
+    
     def AddInvest(self, inv):
         query = 'INSERT INTO invest(isin, open, shares, purchValue, portfolioId, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s);'
         try:
@@ -51,7 +71,24 @@ class DBMgr:
             self.close()
         except (Exception, psycopg2.DatabaseError) as error: 
             print(error)
-    
+
+    def AddPortfolio_Stock(self, ticker, shares, purchValue, trading='SWG', broker='FT'):
+        query_ps = "INSERT INTO portfolio_stocks(ticker, shares, purchValue, trading, broker, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+        query_s = "UPDATE stock SET updValue = %s WHERE ticker = %s"
+
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query_ps, (ticker, shares, purchValue, trading, broker, self.now, self.now))
+            cursor.execute(query_s, ('Y', ticker))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+            print(ticker, ' added to portfolio.')
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+
     def AddOperation(self, isinBuy, isinSell, amount, type='T', status='P', comission=0, portfolioId=1):
         queryIns = 'INSERT INTO operation(isinBuy, isinSell, amount, type, comission, portfolioId, status, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s,  %s, %s);'
         queryUpd = "UPDATE operation SET prevsharesbuy = t1.sharesbuy, postsharesbuy = round((t1.sharesbuy + amount/t1.valuebuy)*100)/100, prevsharessell = t2.sharessell, postsharessell = round((t2.sharessell - amount/t2.valuesell)*100)/100 FROM \
@@ -106,6 +143,18 @@ class DBMgr:
                 self.connect()
                 cursor = self.conn.cursor()
                 cursor.execute(query, (value, change, isin))
+                self.conn.commit()
+                cursor.close()
+                self.close()
+           except (Exception, psycopg2.DatabaseError) as error: 
+                print(error)
+
+    def UpdateStockValue(self, ticker, value):
+           query = 'UPDATE stock SET value = %s WHERE ticker = %s'
+           try:
+                self.connect()
+                cursor = self.conn.cursor()
+                cursor.execute(query, (value, ticker))
                 self.conn.commit()
                 cursor.close()
                 self.close()
@@ -387,6 +436,8 @@ class DBMgr:
         except (Exception, psycopg2.DatabaseError) as error: 
             print(error)
 
+    
+
 
 if __name__ == '__main__':
     
@@ -431,8 +482,8 @@ if __name__ == '__main__':
 
     #dbMgr.UpdateInvOperation('IE00B03HCZ61', 61.33, 1499.94)
 
-    isins = dbMgr.GetFundIsins(True)
-    print(isins)
+    #isins = dbMgr.GetFundIsins(True)
+    #print(isins)
 
     #codes = dbMgr.GetStockCodes()
     #print(codes)
@@ -443,6 +494,17 @@ if __name__ == '__main__':
     #iic = dbMgr.GetInvestIsinNames(1)
     #print(iic)
     
-    dbMgr.GetFcodeCurr(isin='IE00B530N462')
+    #dbMgr.GetFcodeCurr(isin='IE00B530N462')
+
+    #dbMgr.AddStock(ticker='JETS', name='JETS Global', currency='USD', type='ETF', market='ARCA')
+
+    #dbMgr.AddPortfolio_Stock(ticker='DPW.DE', shares=35, purchValue=29.51, trading='POS', broker='IB')
+    #dbMgr.AddPortfolio_Stock(ticker='VOO', shares=10, purchValue=238.95, trading='POS', broker='IB')
+    #dbMgr.AddPortfolio_Stock(ticker='AMZN', shares=2, purchValue=1723.34, trading='POS', broker='IB')
+    #dbMgr.AddPortfolio_Stock(ticker='ACN', shares=221, purchValue=141.45, trading='POS', broker='MS')
+    #dbMgr.AddPortfolio_Stock(ticker='CCL', shares=45, purchValue=22.83, trading='POS', broker='FT')
+    #dbMgr.AddPortfolio_Stock(ticker='JETS', shares=140, purchValue=20.77, trading='POS', broker='IB')
+    
+    
 
    
