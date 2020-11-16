@@ -503,7 +503,7 @@ if __name__ == '__main__':
     #dbMgr.AddPortfolio_Stock(ticker='AMZN', shares=2, purchValue=1723.34, trading='POS', broker='IB')
     #dbMgr.AddPortfolio_Stock(ticker='ACN', shares=221, purchValue=141.45, trading='POS', broker='MS')
     #dbMgr.AddPortfolio_Stock(ticker='CCL', shares=45, purchValue=22.83, trading='POS', broker='FT')
-    #dbMgr.AddPortfolio_Stock(ticker='JETS', shares=140, purchValue=20.77, trading='POS', broker='IB')
+    #dbMgr.AddPortfolio_Stock(ticker='JETS', shares=140, purchValue=17.44, trading='POS', broker='IB')
     
     
 
