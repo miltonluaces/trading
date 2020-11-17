@@ -106,6 +106,31 @@ def AddStocks_SP500():
 
         print('SP500 stocks added to Database.')
 
+def UpdateStocks_SP500():
+        dbMgr = DBMgr()
+        idx = Indices()
+        idx.load_sector()
+        ex = Exchange()
+        ex.load_exchange()
+        
+        currency='USD'
+        type='STO'
+        sp500='Y'
+        rs2000='Y'
+        
+
+        tickers = si.tickers_sp500()
+        for ticker in tickers:
+            try:
+                #market = ex.get_exchange(ticker)
+                sector = idx.get_sector(ticker)
+                dbMgr.UpdateStockColumn(ticker, 'sector', sector)
+                print(ticker, ' updated.')
+            except:
+                print('Error in ', ticker)
+
+
+        print('SP500 stocks added to Database.')
 
 
 if __name__ == '__main__':
@@ -118,11 +143,12 @@ if __name__ == '__main__':
 
     #UpdateStockValues()
 
-    ps = GetPortfolioStocks()
+    #ps = GetPortfolioStocks()
     #print(ps)
 
-    totals = GetPortfolioStocksTotals(ps)
-    print(totals)
+    #totals = GetPortfolioStocksTotals(ps)
+    #print(totals)
     
-    InsertPerformanceStocks(ps)
-    #AddStocks_SP500()
+    #InsertPerformanceStocks(ps)
+    
+    UpdateStocks_SP500()

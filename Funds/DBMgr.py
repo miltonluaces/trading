@@ -189,6 +189,18 @@ class DBMgr:
            except (Exception, psycopg2.DatabaseError) as error: 
                 print(error)
 
+    def UpdateStockColumn(self, ticker, colName, value):
+           query = "UPDATE stock SET " + colName + " = %s WHERE ticker = %s"
+           try:
+                self.connect()
+                cursor = self.conn.cursor()
+                cursor.execute(query, (value, ticker))
+                self.conn.commit()
+                cursor.close()
+                self.close()
+           except (Exception, psycopg2.DatabaseError) as error: 
+                print(error)
+
 
     # Options --------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
@@ -207,6 +219,32 @@ class DBMgr:
 
     # General --------------------------------------------------------------------------------------------------------------------------------------------------------------------
    
+    def UpdateHist(self, table, ticker, starthist, endhist, hist):
+        query = "UPDATE " + table + " SET starthist = %s, endhist = %s, hist = %s WHERE ticker = %s"
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query, (starthist, endhist, hist, ticker))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+
+    def GetHist(self, table, ticker):
+        query = "SELECT data FROM " + table + " WHERE ticker = '"  + ticker + "'"
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query)
+            mview = cursor.fetchone()
+            data = str(mview[0],'utf-8')
+            return data
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+    
     def AddRealizedPL(self, assetid, shares, purchValue, currValue, asset='S', broker='FT'):
         query = 'insert into realized_pl(selldate, assetid, shares, purchValue, currValue, asset, broker) values (%s, %s, %s, %s, %s, %s, %s);'
          
@@ -429,7 +467,7 @@ class DBMgr:
         if self.conn is not None: 
             self.conn.close()
   
-    #HistData
+    #HistData ---------------------------------------------------------------------------------------------------------------------------
 
     def AddHistData(self, isin, name, currency, startdate, enddate, data):
         query = 'INSERT INTO histdata(isin, name, currency, startdate, enddate, data, updated, created, modified) VALUES(%s,%s,%s,%s,%s,%s,%s,%s,%s);'
@@ -500,17 +538,19 @@ if __name__ == '__main__':
     dbMgr = DBMgr()
 
     path = 'D:/data/csv/funds/Portfolio/'
-    #isin = 'IE0002639668'
+    isin = 'IE0002639668'
     #name = 'Vanguard U.S. 500 Stock Index Fund USD Acc'
     #currency = 'USD'
     #startdate = datetime.datetime(2018, 6, 1)
     #enddate = datetime.datetime(2019, 5, 17)
     #file = open(path + isin + '.csv','rb')
     #data = pd.read_csv(path + isin + '.csv', sep='\t')
+    #print(data.shape)
+    #print(data.head())
     #dbMgr.AddHistData(isin, name, currency, startdate, enddate, bytes(data))
 
     #data = dbMgr.GetHistData(isin)
-    #print(data)
+    #print(data.head())
     #res = dbMgr.Query('fund')
     #print(res.shape)
 
@@ -565,8 +605,11 @@ if __name__ == '__main__':
 
     #print(dbMgr.GetPS_features('AMZN'))
 
-    dbMgr.AddPortfolio_Stock(ticker='AAPL', shares=1, purchValue=10, trading='SWG', broker='FT')
+    #dbMgr.AddPortfolio_Stock(ticker='AAPL', shares=1, purchValue=10, trading='SWG', broker='FT')
 
     #dbMgr.ClosePortfolio_Stock(ticker='AAPL', sellValue=12)
 
+    #dbMgr.UpdateStockColumn('AEP', 'sector', 'U')
    
+    #hist = pd.read_csv('D:/Invest/data/sp500.csv', sep='\t')
+    #dbMgr.UpdateHist('index', 'sp500', '01/01/2000', '01/01/2000', bytes(hist))
