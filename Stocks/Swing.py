@@ -11,13 +11,15 @@ def GetStockSwingOperations():
     stock_operations.columns = ['ticker', 'shares', 'value', 'eurValue','op']
     return stock_operations
 
-def RegisterSwingOperations(sso):
+def RegisterSwingOperations(sso, verbose=True):
     dbMgr = DBMgr()
     for row in sso.iterrows():
         if row[1]['op'] == 'B':
             dbMgr.AddPortfolio_Stock(ticker=row[1]['ticker'], shares=row[1]['shares'], purchValue=row[1]['eurValue'], trading='POS', broker='IB')
+            if verbose: print("row[1]['ticker'] position added to portfolio.")
         elif row[1]['op'] == 'S':
-            print('Not implemented')
+            dbMgr.ClosePortfolio_Stock(ticker=row[1]['ticker'], sellValue=row[1]['eurValue'])
+            print("row[1]['ticker'] position closed in portfolio and added realized P&L.")
         else:
             print('Error')
     

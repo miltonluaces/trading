@@ -16,7 +16,7 @@ class DBMgr:
 
  
 
-    # Constructor
+    # Constructor  --------------------------------------------------------------------------------------------------------------------------------------------------------------------
     def __init__(self):
         self.user = 'postgres'
         self.password = 'ml'
@@ -25,9 +25,9 @@ class DBMgr:
         self.now = datetime.datetime.now().strftime("%Y/%m/%d")
 
 
- 
+
+    # Funds --------------------------------------------------------------------------------------------------------------------------------------------------------------------
     
-    # Insert methods
     def AddFund(self, fund):
         query = 'INSERT INTO fund(isin, name, asset, currency, market, type, sector, size, risk, ogc, volatility, manager, broker, update, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
         try:
@@ -39,26 +39,7 @@ class DBMgr:
             self.close()
         except (Exception, psycopg2.DatabaseError) as error: 
             print(error)
-    
-    def AddStock(self, ticker, name, currency='USD', type='STO', market='', sector='', sp500='N', rs2000='N'):
-        query = 'INSERT INTO stock(ticker, name, currency, type, market, sector, sp500, rs2000, value, hist, updvalue, updhist, starthist, endhist, datevalue) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
-        try:
-            self.connect()
-            cursor = self.conn.cursor()
-            value = 0
-            hist = ''
-            updvalue = 'N'
-            updhist = 'N'
-            starthist = '01/01/2000'
-            endhist = '01/01/2000'
-            datevalue = '01/01/2000'
-            cursor.execute(query, (ticker, name, currency, type, market, sector, sp500, rs2000, value, hist,  updvalue, updhist, starthist, endhist, datevalue))
-            self.conn.commit()
-            cursor.close()
-            self.close()
-        except (Exception, psycopg2.DatabaseError) as error: 
-            print(error)
-    query = "insert into stock(ticker, name, currency, market, sector, value, broker, trading, type, update, created) values ('DPW.DE', 'Deutch P W', 'EUR', 'INTER', '', 0, 'IB', 'POS', 'STO', 1, now())"
+
     
     def AddInvest(self, inv):
         query = 'INSERT INTO invest(isin, open, shares, purchValue, portfolioId, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s);'
@@ -72,59 +53,6 @@ class DBMgr:
         except (Exception, psycopg2.DatabaseError) as error: 
             print(error)
 
-    def AddPortfolio_Stock(self, ticker, shares, purchValue, trading='SWG', broker='FT'):
-        query_ps = "INSERT INTO portfolio_stocks(ticker, shares, purchValue, trading, broker, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s)"
-        query_s = "UPDATE stock SET updValue = %s WHERE ticker = %s"
-
-        try:
-            self.connect()
-            cursor = self.conn.cursor()
-            cursor.execute(query_ps, (ticker, shares, purchValue, trading, broker, self.now, self.now))
-            cursor.execute(query_s, ('Y', ticker))
-            self.conn.commit()
-            cursor.close()
-            self.close()
-            print(ticker, ' added to portfolio.')
-        except (Exception, psycopg2.DatabaseError) as error: 
-            print(error)
-
-
-    def AddOperation(self, isinBuy, isinSell, amount, type='T', status='P', comission=0, portfolioId=1):
-        queryIns = 'INSERT INTO operation(isinBuy, isinSell, amount, type, comission, portfolioId, status, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s,  %s, %s);'
-        queryUpd = "UPDATE operation SET prevsharesbuy = t1.sharesbuy, postsharesbuy = round((t1.sharesbuy + amount/t1.valuebuy)*100)/100, prevsharessell = t2.sharessell, postsharessell = round((t2.sharessell - amount/t2.valuesell)*100)/100 FROM \
-        (SELECT f.value as valuebuy, i.shares AS sharesbuy FROM fund AS f INNER JOIN invest AS i ON f.isin = i.isin WHERE f.isin = %s) AS t1, \
-        (SELECT f.value as valuesell, i.shares AS sharessell FROM fund AS f INNER JOIN invest AS i ON f.isin = i.isin WHERE f.isin = %s) AS t2;"
-        try:
-            self.connect()
-            cursor = self.conn.cursor()
-            cursor.execute(queryIns, (isinBuy, isinSell, amount, type, comission, portfolioId, status, self.now, self.now))
-            cursor.execute(queryUpd, (isinBuy, isinSell))
-            self.conn.commit()
-            cursor.close()
-            self.close()
-
-
-        except (Exception, psycopg2.DatabaseError) as error: 
-            print(error)
-
-    def AddPLOperation(self, isin, shares, purchValue, currValue, currency, asset):
-        query = 'INSERT INTO operation(date, type, isin, shares, purchValue, currValue, currency, plcurr, pleur, asset) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
-        plcurr = round(shares * (currValue - purchValue), 2)
-        pleur =  round(plcurr * currency, 2)
-        
-        try:
-            self.connect()
-            cursor = self.conn.cursor()
-            cursor.execute(query, (self.now, 'S', isin, shares, purchValue, currValue, currency, plcurr, pleur, asset))
-            self.conn.commit()
-            cursor.close()
-            self.close()
-
-
-        except (Exception, psycopg2.DatabaseError) as error: 
-            print(error)
-  
-    # Update methods
     def UpdateUrl(self, isin, url):
            query = 'UPDATE fund SET url = %s WHERE isin = %s'
            try:
@@ -143,30 +71,6 @@ class DBMgr:
                 self.connect()
                 cursor = self.conn.cursor()
                 cursor.execute(query, (value, change, isin))
-                self.conn.commit()
-                cursor.close()
-                self.close()
-           except (Exception, psycopg2.DatabaseError) as error: 
-                print(error)
-
-    def UpdateStockValue(self, ticker, value):
-           query = 'UPDATE stock SET value = %s WHERE ticker = %s'
-           try:
-                self.connect()
-                cursor = self.conn.cursor()
-                cursor.execute(query, (value, ticker))
-                self.conn.commit()
-                cursor.close()
-                self.close()
-           except (Exception, psycopg2.DatabaseError) as error: 
-                print(error)
-
-    def UpdateOptionValue(self, ticker, date, strike, value):
-           query = 'UPDATE option SET currvalue = %s WHERE ticker = %s and exercise=%s and strike=%s'
-           try:
-                self.connect()
-                cursor = self.conn.cursor()
-                cursor.execute(query, (value, ticker, date, strike))
                 self.conn.commit()
                 cursor.close()
                 self.close()
@@ -212,6 +116,152 @@ class DBMgr:
           except (Exception, psycopg2.DatabaseError) as error: 
                 print(error)
 
+
+    # Stocks --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def AddStock(self, ticker, name, currency='USD', type='STO', market='', sector='', sp500='N', rs2000='N'):
+        query = 'INSERT INTO stock(ticker, name, currency, type, market, sector, sp500, rs2000, value, hist, updvalue, updhist, starthist, endhist, datevalue) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            value = 0
+            hist = ''
+            updvalue = 'N'
+            updhist = 'N'
+            starthist = '01/01/2000'
+            endhist = '01/01/2000'
+            datevalue = '01/01/2000'
+            cursor.execute(query, (ticker, name, currency, type, market, sector, sp500, rs2000, value, hist,  updvalue, updhist, starthist, endhist, datevalue))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+    query = "insert into stock(ticker, name, currency, market, sector, value, broker, trading, type, update, created) values ('DPW.DE', 'Deutch P W', 'EUR', 'INTER', '', 0, 'IB', 'POS', 'STO', 1, now())"
+    
+    
+    def AddPortfolio_Stock(self, ticker, shares, purchValue, trading='SWG', broker='FT'):
+        query_ps = "INSERT INTO portfolio_stocks(ticker, shares, purchValue, trading, broker, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s)"
+        query_s = "UPDATE stock SET updValue = %s WHERE ticker = %s"
+
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query_ps, (ticker, shares, purchValue, trading, broker, self.now, self.now))
+            cursor.execute(query_s, ('Y', ticker))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+            print(ticker, ' added to portfolio.')
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+    def ClosePortfolio_Stock(self, ticker, sellValue):
+        features = self.GetPS_features(ticker)
+
+        query_ps = "DELETE FROM portfolio_stocks WHERE ticker = '" + ticker + "'"
+        query_s = "UPDATE stock SET updValue = 'N' WHERE ticker = '" + ticker + "'"
+        query_rp = "INSERT INTO realized_pl(selldate, assetid, shares, purchValue, currValue, asset, broker) VALUES (%s, %s, %s, %s, %s, %s, %s)"
+
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query_ps, (ticker))
+            cursor.execute(query_s, (ticker))
+            cursor.execute(query_rp, (self.now, ticker, features['shares'], features['purchValue'], sellValue, 'S', features['broker']))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+            print(ticker, 'position closed.')
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+        
+
+    def UpdateStockValue(self, ticker, value):
+           query = 'UPDATE stock SET value = %s WHERE ticker = %s'
+           try:
+                self.connect()
+                cursor = self.conn.cursor()
+                cursor.execute(query, (value, ticker))
+                self.conn.commit()
+                cursor.close()
+                self.close()
+           except (Exception, psycopg2.DatabaseError) as error: 
+                print(error)
+
+
+    # Options --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    def UpdateOptionValue(self, ticker, date, strike, value):
+           query = 'UPDATE option SET currvalue = %s WHERE ticker = %s and exercise=%s and strike=%s'
+           try:
+                self.connect()
+                cursor = self.conn.cursor()
+                cursor.execute(query, (value, ticker, date, strike))
+                self.conn.commit()
+                cursor.close()
+                self.close()
+           except (Exception, psycopg2.DatabaseError) as error: 
+                print(error)
+
+
+    # General --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+   
+    def AddRealizedPL(self, assetid, shares, purchValue, currValue, asset='S', broker='FT'):
+        query = 'insert into realized_pl(selldate, assetid, shares, purchValue, currValue, asset, broker) values (%s, %s, %s, %s, %s, %s, %s);'
+         
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query, (self.now, assetid, shares, purchValue, currValue, asset, broker))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+
+
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+
+    # Deprecated --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+    
+    def AddOperation(self, isinBuy, isinSell, amount, type='T', status='P', comission=0, portfolioId=1):
+        queryIns = 'INSERT INTO operation(isinBuy, isinSell, amount, type, comission, portfolioId, status, created, modified) VALUES(%s, %s, %s, %s, %s, %s, %s,  %s, %s);'
+        queryUpd = "UPDATE operation SET prevsharesbuy = t1.sharesbuy, postsharesbuy = round((t1.sharesbuy + amount/t1.valuebuy)*100)/100, prevsharessell = t2.sharessell, postsharessell = round((t2.sharessell - amount/t2.valuesell)*100)/100 FROM \
+        (SELECT f.value as valuebuy, i.shares AS sharesbuy FROM fund AS f INNER JOIN invest AS i ON f.isin = i.isin WHERE f.isin = %s) AS t1, \
+        (SELECT f.value as valuesell, i.shares AS sharessell FROM fund AS f INNER JOIN invest AS i ON f.isin = i.isin WHERE f.isin = %s) AS t2;"
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(queryIns, (isinBuy, isinSell, amount, type, comission, portfolioId, status, self.now, self.now))
+            cursor.execute(queryUpd, (isinBuy, isinSell))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+
+
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+    def AddPLOperation(self, isin, shares, purchValue, currValue, currency, asset):
+        query = 'INSERT INTO operation(date, type, isin, shares, purchValue, currValue, currency, plcurr, pleur, asset) VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s);'
+        plcurr = round(shares * (currValue - purchValue), 2)
+        pleur =  round(plcurr * currency, 2)
+        
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query, (self.now, 'S', isin, shares, purchValue, currValue, currency, plcurr, pleur, asset))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+
+
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+  
+
     def UpdateInvOperation(self, isin, shares, amount):
         queryOp = "UPDATE operation SET shares = %s, postsharesbuy = prevsharesbuy + %s, amount = %s, status = 'C', modified = NOW() WHERE isinbuy = %s;"
         queryInv = "UPDATE invest SET shares = shares + %s, purchvalue = round(((shares * purchvalue + %s)/(shares+%s))*100)/100, modified = NOW() WHERE isin = %s;"
@@ -240,7 +290,9 @@ class DBMgr:
                 print(error)
 
 
-    # Select methods
+     # General Queries --------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
     def QueryStr(self, query):
             self.connect()
             res = pd.read_sql(query, self.conn)
@@ -273,6 +325,10 @@ class DBMgr:
     def GetFcodeCurr(self, isin):
         res = self.QueryStr("SELECT url, currency FROM fund WHERE isin ='" + isin + "'")
         return { 'fcode': res.values[0][0], 'currency': res.values[0][1]}
+
+    def GetPS_features(self, ticker):
+        res = self.QueryStr("SELECT shares, purchValue, broker FROM portfolio_stocks WHERE ticker ='" + ticker + "'")
+        return { 'shares': res.values[0][0], 'purchValue': res.values[0][1], 'broker': res.values[0][2] }
     
     def GetInvestIsinCurrs(self, portfolio):
            res = self.QueryStr('SELECT i.isin, f.currency f FROM fund AS f INNER JOIN invest AS i ON f.isin = i.isin WHERE portfolioId =' + str(portfolio))
@@ -362,7 +418,7 @@ class DBMgr:
 
 
     def GetFundData(self, isin):
-           query = 'SELECT * FROM funddata WHERE isin=' + self.isin
+           query = 'SELECT * FROM funddata WHERE isin=' + isin
            res = self.QueryStr(query)
            print(res.values[0])
 
@@ -505,6 +561,12 @@ if __name__ == '__main__':
     #dbMgr.AddPortfolio_Stock(ticker='CCL', shares=45, purchValue=22.83, trading='POS', broker='FT')
     #dbMgr.AddPortfolio_Stock(ticker='JETS', shares=140, purchValue=17.44, trading='POS', broker='IB')
     
-    
+    #dbMgr.AddRealizedPL(assetid='AAPL', shares=1, purchValue=10, currValue=12, asset='S', broker='FT')
+
+    #print(dbMgr.GetPS_features('AMZN'))
+
+    dbMgr.AddPortfolio_Stock(ticker='AAPL', shares=1, purchValue=10, trading='SWG', broker='FT')
+
+    #dbMgr.ClosePortfolio_Stock(ticker='AAPL', sellValue=12)
 
    
