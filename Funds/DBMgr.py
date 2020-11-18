@@ -10,7 +10,7 @@ import numpy as np
 import pandas as pd
 import pandas.io.sql as psql
 from trading.Funds.FundReader import FundReader
-
+from ds_topics.utils.time_series import *
 
 class DBMgr:
 
@@ -219,7 +219,25 @@ class DBMgr:
 
     # General --------------------------------------------------------------------------------------------------------------------------------------------------------------------
    
-    def UpdateHist(self, table, ticker, starthist, endhist, hist):
+    def UpdateDts(self, table, ticker, startdts, enddts, bdts):
+        startdts = datetime.datetime.strptime(startdts,  '%d/%m/%Y').strftime("%m-%d-%Y")
+        enddts = datetime.datetime.strptime(enddts,  '%d/%m/%Y').strftime("%m-%d-%Y")
+        query = "UPDATE " + table + " SET starthist = %s, endhist = %s, hist = %s WHERE ticker = %s"
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query, (startdts, enddts, bdts, ticker))
+            self.conn.commit()
+            cursor.close()
+            self.close()
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
+
+    def UpdateHist(self, table, ticker, starthist, endhist, hist_ts):
+        starthist = datetime.datetime.strptime(starthist,  '%d/%m/%Y').strftime("%m-%d-%Y")
+        endhist = datetime.datetime.strptime(endhist,  '%d/%m/%Y').strftime("%m-%d-%Y")
+        hist = np.array(hist_ts.values).tobytes()
         query = "UPDATE " + table + " SET starthist = %s, endhist = %s, hist = %s WHERE ticker = %s"
         try:
             self.connect()
@@ -233,16 +251,35 @@ class DBMgr:
 
 
     def GetHist(self, table, ticker):
-        query = "SELECT data FROM " + table + " WHERE ticker = '"  + ticker + "'"
+        query = "SELECT starthist, hist FROM " + table + " WHERE ticker = '"  + ticker + "'"
         try:
             self.connect()
             cursor = self.conn.cursor()
             cursor.execute(query)
             mview = cursor.fetchone()
-            data = str(mview[0],'utf-8')
-            return data
+            starthist = mview[0]
+            hist = list(np.frombuffer(bytes(mview[1])))
+            hist_ts = pd.Series(hist)
+            return hist_ts
+
         except (Exception, psycopg2.DatabaseError) as error: 
             print(error)
+
+
+    def GetDts(self, table, ticker):
+        query = "SELECT starthist, hist FROM " + table + " WHERE ticker = '"  + ticker + "'"
+        try:
+            self.connect()
+            cursor = self.conn.cursor()
+            cursor.execute(query)
+            mview = cursor.fetchone()
+            startDts = mview[0]
+            dts = unserialize_dates(mview[1])
+            return startDts, dts
+
+        except (Exception, psycopg2.DatabaseError) as error: 
+            print(error)
+
 
     
     def AddRealizedPL(self, assetid, shares, purchValue, currValue, asset='S', broker='FT'):
@@ -537,14 +574,14 @@ if __name__ == '__main__':
     
     dbMgr = DBMgr()
 
-    path = 'D:/data/csv/funds/Portfolio/'
-    isin = 'IE0002639668'
+    #path = 'D:/data/csv/funds/Portfolio/'
+    #isin = 'IE0002639668'
     #name = 'Vanguard U.S. 500 Stock Index Fund USD Acc'
     #currency = 'USD'
     #startdate = datetime.datetime(2018, 6, 1)
     #enddate = datetime.datetime(2019, 5, 17)
-    #file = open(path + isin + '.csv','rb')
-    #data = pd.read_csv(path + isin + '.csv', sep='\t')
+    #file = open(path + str(isin) + '.csv','rb')
+    #data = pd.read_csv(path + str(isin) + '.csv', sep='\t')
     #print(data.shape)
     #print(data.head())
     #dbMgr.AddHistData(isin, name, currency, startdate, enddate, bytes(data))
@@ -611,5 +648,29 @@ if __name__ == '__main__':
 
     #dbMgr.UpdateStockColumn('AEP', 'sector', 'U')
    
-    #hist = pd.read_csv('D:/Invest/data/sp500.csv', sep='\t')
     #dbMgr.UpdateHist('index', 'sp500', '01/01/2000', '01/01/2000', bytes(hist))
+
+    #path = 'D:/data/csv/funds/Portfolio/'
+    #isin = 'IE0002639668'
+    #startdate = datetime.datetime(2018, 6, 1)
+    #enddate = datetime.datetime(2019, 5, 17)
+    #file = open(path + str(isin) + '.csv','rb')
+    #data = pd.read_csv(path + str(isin) + '.csv', sep='\t')
+    #print(data.shape)
+    #print(data.head())
+    #print(data.head())
+    #hist = gen_ts(startdate, data['value'].values)
+    #print(ts)
+
+    #bvalues = np.array(ts.values).tobytes()
+    #print(bvalues)
+
+    #dbMgr.UpdateHist('index', 'sp500', startdate, enddate, hist)
+
+    startDts, dts = dbMgr.GetDts('index', 'us_dates')
+    print(startDts)
+    print(dts[0:5])
+    print(dts[len(dts)-5:])
+    #hist = dbMgr.GetHist('index', 'sp500')
+    #print(hist)
+
