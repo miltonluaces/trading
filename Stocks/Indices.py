@@ -109,7 +109,7 @@ if __name__ == '__main__':
 
     hist_ts = idx.dbMgr.GetHist('index', ticker)
     print(type(hist_ts))
-    #hist_ts.index = dts
+    hist_ts.index = dts
     print('hist ', hist_ts.shape)
     print(hist_ts.head())
     print(hist_ts.tail())
@@ -130,3 +130,14 @@ if __name__ == '__main__':
 
     #dts = idx.dbMgr.GetHist('index', 'us_dates')
     #print(dts)
+
+    def UpdateIndices(start, end):
+        startdate, enddate, dts, bdts = idx.gen_index_bdts(ticker=ticker, start=start, end=end)
+        dbMgr.UpdateDts('index', ticker='us_dates', startdts=start, enddts=enddate, bdts=bdts)
+        startDts, dts = dbMgr.GetDts('index', 'us_dates')
+
+        dbMgr.UpdateHist(table='index', ticker='sp500', start=start, end=end, hist_ts=hist_ts)
+        dbMgr.UpdateHist(table='index', ticker='nasdaq', start=start, end=end, hist_ts=hist_ts)
+        for sector in self.sectors:
+            ticker = sp500 + lower(sector) 
+            dbMgr.UpdateHist(table='index', ticker='sp500', start=start, end=end, hist_ts=hist_ts)
