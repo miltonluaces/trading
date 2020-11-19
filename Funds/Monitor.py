@@ -41,7 +41,8 @@ def UpdateAssetsPerformance():
     UpdateStockValues()
     UpdateOptionValues()
     InsertPerformanceFunds()
-    InsertPerformanceStocks()
+    ps = GetPortfolioStocks()
+    InsertPerformanceStocks(ps)
     InsertPerformanceOptions()
     InsertPerformanceTotal()
 
