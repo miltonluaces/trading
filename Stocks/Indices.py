@@ -78,7 +78,7 @@ if __name__ == '__main__':
     #idx.gen_sp500_sectors()
     
     start = '01/01/2020'
-    end = '18/11/2020'
+    end = '19/11/2020'
     ticker = 'sp500'
     
     #startdate, enddate, dts, bdts = idx.gen_index_bdts(ticker=ticker, start=start, end=end)

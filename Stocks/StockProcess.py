@@ -97,6 +97,6 @@ if __name__ == '__main__':
     #totals = GetPortfolioStocksTotals(ps)
     #print(totals)
     
-    #InsertPerformanceStocks(ps)
+    InsertPerformanceStocks(ps)
     
     

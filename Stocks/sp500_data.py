@@ -88,6 +88,7 @@ def UpdateIndices_data(start, end):
 
 def UpdateSP500_data(start, end, verbose=False):
     dbMgr = DBMgr()
+    end=end+1
     tickers = si.tickers_sp500()
     tickers = [t.replace('.', '-') for t in tickers]
     startDts, dts = dbMgr.GetDts('index', 'us_dates')
@@ -110,39 +111,55 @@ def LoadSP500_data():
     idx_tickers = [t for t in idx_tickers if t.startswith('sp500')]
    
     # dates
-    startdate, enddate, dts, bdts = idx.gen_index_bdts(ticker='sp500', start=start, end=end)
     startDts, dts = dbMgr.GetDts('index', 'us_dates')
 
     # indices
     Idxs = dict()
     for ticker in idx_tickers:
-        idx = dbMgr.GetHist(table='index', ticker='sp500')
-        idx.index = dts
-        Idxs[ticker] = idx
-
+        try:
+            idx_ts = dbMgr.GetHist(table='index', ticker='sp500')
+            idx_ts.index = dts
+            Idxs[ticker] = idx_ts
+        except:
+            print('Cannot load ', ticker)   
     # stocks
     stk_tickers = si.tickers_sp500()
     stk_tickers = [t.replace('.', '-') for t in stk_tickers]
     Stks = dict()
     for ticker in stk_tickers:
-        stk = idx.dbMgr.GetHist('stock', ticker=ticker)
-        stk.index = dts
-        Stks[ticker] = stk
+        try:
+            stk_ts = dbMgr.GetHist('stock', ticker=ticker)
+            stk_dts = dts[len(dts)-stk_ts.shape[0]:]
+            stk_ts.index = stk_dts
+            Stks[ticker] = stk_ts
+        except:
+            print('Cannot load ', ticker)
+    print('SP500 data loaded.')
     return Idxs, Stks
 
 
-def Gen_Idxcat_analytics(Idxs, Stks):
+def Gen_Idxcat_analytics(Idxs, Stks, path='D:/Invest/Data/stock_hist/'):
+    dts = Idxs['sp500'].index
+
     Rows = []
     for ticker in Stks.keys():
-        ts_stk = Stks[ticker]
-        ts_idx = Idxs['sp500']
-        cat = 'sp500' + idx.get_sector(ticker)
-        ts_cat : Idxs[cat]
-        months=6
-        row = ica.build_idxcat_row(ticker, ts_stk, ts_idx, ts_cat, dts, months)
-        Rows.append(row)
+        try:
+            ts_stk = Stks[ticker]
+            ts_idx = Idxs['sp500']
+            if(ts_stk.shape[0] < 185):
+                print(ticker, 'dropped due to short history.')
+                continue;
+            cat = 'sp500' + idx.get_sector(ticker).lower()
+            ts_cat = Idxs[cat]
+            months=6
+            row = ica.build_idxcat_row(ticker, ts_stk, ts_idx, ts_cat, dts, months)
+            Rows.append(row)
+        except:
+            print('Error in ', ticker)
 
     df = ica.build_idxcat_df(Rows)
+    df.to_csv(path + 'idxcat_analysis.csv')
+    print('idx_cat analysis generated.')
     return df
 
 
@@ -152,25 +169,25 @@ if __name__ == '__main__':
 
     
     start='01/01/2020'
-    end='20/11/2020'
+    end='19/11/2020'
 
-    #dbMgr = DBMgr()
-    # idx=Indices()
+    dbMgr = DBMgr()
+    idx=Indices()
 
-    # ticker = 'AMZN'
-    # hist_data = si.get_data(ticker=ticker, start_date=start, end_date=end)
-    # hist_ts = hist_data['high']
+    #ticker = 'BF-B'
+    #hist_data = si.get_data(ticker=ticker, start_date=start, end_date=end)
+    #hist_ts = hist_data['high']
     # print(hist_ts)
 
-    # dbMgr.UpdateHist('Stock', ticker=ticker, starthist=start, endhist=end, hist_ts=hist_ts)
+    #dbMgr.UpdateHist('Stock', ticker=ticker, starthist=start, endhist=end, hist_ts=hist_ts)
 
     # print('\ndata read\n')
-    # hist_ts = idx.dbMgr.GetHist('Stock', ticker)
-    # print(hist_ts)
+    #hist_ts = idx.dbMgr.GetHist('Stock', ticker)
+    #print(hist_ts.shape)
 
     #UpdateIndices_data(start, end)
     #UpdateSP500_data(start, end, verbose=True)
 
     Idxs, Stks = LoadSP500_data()
-
     Gen_Idxcat_analytics(Idxs, Stks)
+
