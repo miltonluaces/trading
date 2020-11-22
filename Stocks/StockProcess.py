@@ -78,59 +78,7 @@ def InsertPerformanceStocks(ps):
     except (Exception, psycopg2.DatabaseError) as error: 
          print(error)
 
-def AddStocks_SP500():
-        dbMgr = DBMgr()
-        idx = Indices()
-        idx.load_sector()
-        ex = Exchange()
-        ex.load_exchange()
-        
-        currency='USD'
-        type='STO'
-        sp500='Y'
-        rs2000='Y'
-        
 
-        tickers = si.tickers_sp500()
-        for ticker in tickers:
-            try:
-                stk = yf.Ticker(ticker)
-                name = stk.info['longName'][:32]
-                market = ex.get_exchange(ticker)
-                sector = idx.get_sector(ticker)
-                dbMgr.AddStock(ticker=ticker, name=name, market=market, sector=sector)
-                print(ticker, ' added.')
-            except:
-                print('Error in ', ticker)
-
-
-        print('SP500 stocks added to Database.')
-
-def UpdateStocks_SP500():
-        dbMgr = DBMgr()
-        idx = Indices()
-        idx.load_sector()
-        ex = Exchange()
-        ex.load_exchange()
-        
-        currency='USD'
-        type='STO'
-        sp500='Y'
-        rs2000='Y'
-        
-
-        tickers = si.tickers_sp500()
-        for ticker in tickers:
-            try:
-                #market = ex.get_exchange(ticker)
-                sector = idx.get_sector(ticker)
-                dbMgr.UpdateStockColumn(ticker, 'sector', sector)
-                print(ticker, ' updated.')
-            except:
-                print('Error in ', ticker)
-
-
-        print('SP500 stocks added to Database.')
 
 
 if __name__ == '__main__':
@@ -151,20 +99,4 @@ if __name__ == '__main__':
     
     #InsertPerformanceStocks(ps)
     
-    #UpdateStocks_SP500()
-    start='01/01/2020'
-    end='18/11/2020'
-
-    dbMgr = DBMgr()
-    idx=Indices()
-
-    ticker = 'AMZN'
-    hist_data = si.get_data(ticker=ticker, start_date=start, end_date=end)
-    hist_ts = hist_data['high']
-    print(hist_ts)
-
-    dbMgr.UpdateHist('Stock', ticker=ticker, starthist=start, endhist=end, hist_ts=hist_ts)
-
-    print('\ndata read\n')
-    hist_ts = idx.dbMgr.GetHist('Stock', ticker)
-    print(hist_ts)
+    

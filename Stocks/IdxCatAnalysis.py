@@ -55,25 +55,6 @@ def build_idxcat_df(rows):
     df.columns = 'ticker','stk1','stk2','stk3','stk4','stk5','stk6','idx1','idx2','idx3','idx4','idx5','idx6','cat1','cat2','cat3','cat4','cat5','cat6','didx1','didx2','didx3','didx4','didx5','didx6','dcat1','dcat2','dcat3','dcat4','dcat5','dcat6'
     return df   
 
-def loadSP500_idxcat(loadHist=False, months=6):
- 
-    # iterate idx list, getHist
-    # iterate ticker list, getHist
-
-   if loadHist:
-        #idx.get_hist, save
-        #si.get_hist, save
-
-        #idx = dbMgr.GetHist
-        #cat = dbMgr.GetHist
-        #stk = dbMgr.GetHist
-
-        Rows = []
-        #row = build_idxcat_row
-        #Rows.append(row)
-
-        #df = build_idxcat_df(rows)
-
 
         
 
