@@ -14,12 +14,6 @@ def GetChain(ticker, dates, idx, type='calls'):
     chain = options.get_options_chain(ticker, GetDate(dates, idx))
     return chain[type]
 
-def GetOptTbl(ticker, date, type='calls'):
-    chain = options.get_options_chain(ticker, date)[type]
-    df = pd.DataFrame({'Premium' : chain['Last Price'], 'Strike':chain['Strike']})
-    df['Idm'] = df['Strike'] + df['Premium']
-    return df
-
 def GetPrice(ticker, date, strike, type='calls'):
     chain = options.get_options_chain(ticker, date)[type]
     return (float)(chain[chain['Strike']==strike]['Last Price'])
@@ -38,12 +32,7 @@ def PlotAnalysis(tbl, n=0):
         tabl= tbl
     else:
         tabl=tbl.head(n)
-    plt.figure(figsize=(20,10))
-    plt.xticks(tabl['Strike'])
-    plt.plot(tabl['Strike'], tabl['53%'])
-    plt.plot(tabl['Strike'], tabl['58%'])
-    plt.plot(tabl['Strike'], tabl['62%'])
-    plt.show();
+    
 
 
 if __name__ == '__main__':

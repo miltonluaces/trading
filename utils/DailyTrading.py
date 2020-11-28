@@ -100,12 +100,4 @@ def GenHistory(tickers, ndays, filename):
 if __name__ == '__main__':
     print('DailyTrading\n')
 
-    #vf = VisualFunds()
-    #stocks = vf.GetQueryRes("SELECT isin FROM investView() WHERE asset = 'S'")
-    #for i in range(stocks.shape[0]):
-    #    Stock_chart(stocks.iloc[i]['isin'])
-
-    df = get_index_hist(index='sp500re', start='01/01/2020', end='01/11/2020', interval='Daily')
-    print(df.shape[0])
-    print(df.head())
-
+    

@@ -77,7 +77,4 @@ def GenTrendDs(ts, start, nHist, nFcst, tpVar, slVar, incFcst=False, verbose=Fal
 if __name__ == '__main__':
     print('SurfTrading\n')
 
-    ts = st.get_rtdata('ACN')
-    plt.figure(figsize=(20, 10));
-    ts.plot();
-    pd.DataFrame(ts)
+    

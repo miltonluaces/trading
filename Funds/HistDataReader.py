@@ -14,7 +14,7 @@ from urllib.request import urlopen
 class HistDataReader:
 
     def __init__(self):
-        self.baseUrl = 'https://markets.ft.com/data/funds/tearsheet/historical?s='
+        self.baseUrl = 'https://historical?s='
    
     def GetHistData(self, isin, curr):
         url = self.baseUrl + isin + ':' + curr

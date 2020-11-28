@@ -4,10 +4,7 @@ import investpy
 class Indices:
 
     def __init__(self):
-        self.path = 'D:/Invest/Data/stock_lists/sp500_sectors/'
-        self.sectors = ['CD', 'CS', 'HC', 'I', 'IT','M', 'RE', 'TS', 'U', 'F', 'E']
-        self.Idx = pd.read_csv('D:/Invest/data/Indices/indices.csv', encoding = 'ISO-8859-1')
-        self.sps = pd.read_csv(self.path + 'sp500_sectors.csv')
+        
 
     def get_hist(self, index, start, end, interval):
         idex = self.Idx[self.Idx['Index']==index]['Name'].values[0]
@@ -28,7 +25,7 @@ class Indices:
         return sps
     
     def load_sector(self):
-        self.sps = pd.read_csv(self.path + 'sp500_sectors.csv')
+        self.sps = pd.read_csv(self.path')
         self.sps.index = self.sps['Symbol']
 
     def get_sector(self, ticker):
@@ -40,15 +37,4 @@ class Indices:
 if __name__ == '__main__':
 
     idx = Indices()
-    #df = idx.get_hist(index='sp500re', start='01/01/2020', end='01/11/2020', interval='Daily')
-    #print(df.shape[0])
-    #print(df.head())
-
-    #idx.sectors = ['CD', 'CS', 'HC', 'I', 'IT', 'TS', 'M', 'F', 'E']
-    #sps = idx.get_sp500_sectors()
-    #print(sps)
-
-    #print(sps[sps['Symbol']=='AMZN']['Sector'])
-
-    idx.load_sector()
-    print(idx.get_sector(ticker = 'AMZN'))
+    
