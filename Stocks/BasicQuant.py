@@ -11,14 +11,6 @@ yesterday = today - timedelta(1)
 today = today.strftime('%Y-%m-%d')
 yesterday = yesterday.strftime('%Y-%m-%d')
 
-def GetHist():
-    for stock in stocks:
-        data = si.get_data(stock, start_date='01-09-2018', end_date=today)
-        prices = data.iloc[:,2].values
-        plt.plot(prices)
-        plt.title(stock)
-        plt.show()
-
 def PortfolioValue(prnt=True):
     try:
         tot = 0

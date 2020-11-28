@@ -6,7 +6,7 @@ class Indices:
     def __init__(self):
         self.path = 'D:/Invest/Data/stock_lists/sp500_sectors/'
         self.sectors = ['CD', 'CS', 'HC', 'I', 'IT','M', 'RE', 'TS', 'U', 'F', 'E']
-        self.Idx = pd.read_csv('D:/Invest/data/indices.csv', encoding = 'ISO-8859-1')
+        self.Idx = pd.read_csv('D:/Invest/data/Indices/indices.csv', encoding = 'ISO-8859-1')
         self.sps = pd.read_csv(self.path + 'sp500_sectors.csv')
 
     def get_hist(self, index, start, end, interval):
